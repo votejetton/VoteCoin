@@ -1,19 +1,13 @@
 const walletGroupsContainer = document.getElementById('wallet-groups');
 const sumarryBar = document.getElementById('sumarry-bar');
 const summaryText = document.getElementById('sumarry-text');
-const summaryTextC = document.getElementById('sumarry-text-c');
-var currentTheme = 'light';
+const summaryTextC = document.getElementById('sumarry-text-c');;
 sumarryBar.style.width = `${0}%`;
-// Sample dictionary of givers (replace with your actual data)
 
-const extraSmallGiversMaxVolume = 448500000
-const smallGiversMaxVolume = 138000000
-const mediumGiversMaxVolume = 69000000
-const largeGiversMaxVolume = 34500000
-
-const totalDiff = BigInt('115792089237277217110272752943501742914102634520085823245724998868298727686144')
-const hashrate3080 = BigInt('2000000000')
-
+const extraSmallGiversMaxVolume = 4485000000
+const smallGiversMaxVolume = 1380000000
+const mediumGiversMaxVolume = 690000000
+const largeGiversMaxVolume = 345000000
 
 const givers = {
     "largeGivers": [
@@ -125,7 +119,7 @@ async function displayWalletGroups() {
 
     for (let i = 0; i < givers.largeGivers.length; i++) {
         const giver = givers.largeGivers[i]
-        const balance = await getWalletBalance(giver.jettonAddress) / 10000000000;
+        const balance = await getWalletBalance(giver.jettonAddress) / 1000000000;
         const percentage = (balance / largeGiversMaxVolume) * 100;
 
         fillProgressBar(giver, balance, percentage, "Large Giver #" + (i+1).toString(), largeGiversMaxVolume)
@@ -137,7 +131,7 @@ async function displayWalletGroups() {
 
     for (let i = 0; i < givers.medium_givers.length; i++) {
         const giver = givers.medium_givers[i]
-        const balance = await getWalletBalance(giver.jettonAddress) / 10000000000;
+        const balance = await getWalletBalance(giver.jettonAddress) / 1000000000;
         const percentage = ((balance) / mediumGiversMaxVolume) * 100;
 
         fillProgressBar(giver, balance, percentage, "Medium Giver #" + (i+1).toString(), mediumGiversMaxVolume)
@@ -149,7 +143,7 @@ async function displayWalletGroups() {
 
     for (let i = 0; i < givers.small_givers.length; i++) {
         const giver = givers.small_givers[i]
-        const balance = await getWalletBalance(giver.jettonAddress) / 10000000000;
+        const balance = await getWalletBalance(giver.jettonAddress) / 1000000000;
         const percentage = ((balance) / smallGiversMaxVolume) * 100;
 
         fillProgressBar(giver, balance, percentage, "Small Giver #" + (i+1).toString(), smallGiversMaxVolume)
@@ -160,7 +154,7 @@ async function displayWalletGroups() {
     }
     for (let i = 0; i < givers.extra_small_givers.length; i++) {
         const giver = givers.extra_small_givers[i]
-        const balance = await getWalletBalance(giver.jettonAddress) / 10000000000;
+        const balance = await getWalletBalance(giver.jettonAddress) / 1000000000;
         const percentage = ((balance) / extraSmallGiversMaxVolume) * 100;
 
         fillProgressBar(giver, balance, percentage, "Extra Small Giver #" + (i+1).toString(), extraSmallGiversMaxVolume)
@@ -170,9 +164,15 @@ async function displayWalletGroups() {
         minedSumm+=balance;
     }
 
-    sumarryBar.style.width = `${((minedSumm/summa)*100)}%`;
+    let barPercentage = ((minedSumm/summa)*100);
+    sumarryBar.style.width = `${barPercentage}%`;
     summaryTextC.textContent = `Mining progress: ${(100 - (minedSumm/summa)*100).toFixed(2)}%`;
     summaryText.textContent = `Total Givers Balance: ${minedSumm.toLocaleString('en-US')}/${summa.toLocaleString('en-US')} VOTE`;
+    if(barPercentage < 80) {
+        sumarryBar.classList.add('progress-bar-fill-less-80');
+    } else if(barPercentage < 30) {
+        sumarryBar.classList.add('progress-bar-fill-less-30');
+    }
 }
 
 document.body.classList.add('dark-theme')
